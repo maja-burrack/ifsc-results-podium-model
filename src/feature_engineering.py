@@ -28,7 +28,7 @@ class Features:
                 .over(['event_id', 'dcat'])
         )
 
-        janja_id = 1147
+        janja_id = 1147 
 
         df = df.with_columns(
             is_janja_competing =
@@ -63,13 +63,21 @@ class Features:
         )
         
         added_cols = list(set(df.columns).difference(set(starting_cols)))
-        print(f"added features: {added_cols}")
         
         # drop first year because of the rolling windows
         min_year = df.select('status_as_of').min().item().year
         df = df.filter(pl.col('status_as_of').dt.year() > min_year)
         
         df = df.with_columns_seq(pl.col('athlete_age_in_days').dt.total_days())
+        
+        # all features are on a comp_level (or athlete level) so let's group data by dropping round-related columns and dropping duplicates
+        cols_to_remove = [
+            'round',
+            'score',
+            'round_rank'
+        ]
+
+        df = df.drop(cols_to_remove).unique()
         
         return df
     
