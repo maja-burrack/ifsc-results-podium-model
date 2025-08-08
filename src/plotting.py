@@ -62,12 +62,12 @@ def plot_shap_waterfall(shap_values=None, index=0, top_n=10, model=None, X=None,
     shap.plots.waterfall(shap_values[index], max_display=top_n, show=False)
     
     if save_path:
-        plt.savefig(save_path)
+        plt.savefig(save_path, bbox_inches="tight")
     
     plt.show()
         
 def plot_shap_bar(shap_values, save_path=False):
     shap.plots.bar(shap_values, show=False)
     if save_path:
-        plt.savefig(save_path)
+        plt.savefig(save_path, bbox_inches="tight")
     plt.show() 
