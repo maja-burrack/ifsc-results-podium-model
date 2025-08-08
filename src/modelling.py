@@ -5,6 +5,17 @@ from sklearn.pipeline import Pipeline
 from sklearn.compose import ColumnTransformer
 from sklearn.model_selection import RandomizedSearchCV, TimeSeriesSplit
 
+def fit_pipeline(data, categorical_features, numerical_features, target, params):
+    X = data.select(categorical_features+numerical_features)
+    y = data.select(target)
+    
+    pipeline = build_pipeline(categorical_features)
+    
+    pipeline.set_params(**params)
+    
+    model = pipeline.fit(X, y)
+    
+    return model
 
 def fit_pipeline_with_tuning(data, categorical_features, numerical_features, target, param_dist):
     X = data.select(categorical_features+numerical_features)
@@ -43,6 +54,7 @@ def build_pipeline(categorical_features):
     clf = xgb.XGBClassifier(
         eval_metric = 'aucpr',
         scale_pos_weight = 23.6, # sum(neg) / sum(pos)
+        seed=42
     )
 
     pipeline = Pipeline(steps=[
